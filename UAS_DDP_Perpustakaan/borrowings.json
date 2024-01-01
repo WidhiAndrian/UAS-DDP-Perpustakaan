@@ -1,1 +1,13 @@
-[]
+[
+  {
+    "Book": {
+      "Title": "BELAJAR GO",
+      "Author": "AGUS KOPLING",
+      "Year": 2020,
+      "Stock": 10
+    },
+    "Borrower": "baskara india",
+    "BorrowDate": "2023-12-31T00:00:00Z",
+    "ReturnDate": "2024-12-31T00:00:00Z"
+  }
+]

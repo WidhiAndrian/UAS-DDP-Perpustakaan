@@ -1,8 +1,14 @@
 [
   {
-    "Title": "Belajar Go",
-    "Author": "Agus Kopling",
-    "Year": 0,
-    "Stock": 0
+    "Title": "BELAJAR GO",
+    "Author": "AGUS KOPLING",
+    "Year": 2020,
+    "Stock": 9
+  },
+  {
+    "Title": "Belajar javascript",
+    "Author": "Kadek Widhi",
+    "Year": 2020,
+    "Stock": 10
   }
 ]

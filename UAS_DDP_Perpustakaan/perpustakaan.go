@@ -60,13 +60,40 @@ func addBook() {
 	fmt.Print("Judul: ")
 	scanner.Scan()
 	newBook.Title = scanner.Text()
+	if newBook.Title == "" {
+		fmt.Println("┌────────────────────────────────────────────────┐")
+		fmt.Println("|         Judul buku tidak boleh kosong.         |")
+		fmt.Println("└────────────────────────────────────────────────┘")
+		return
+	}
+
 	fmt.Print("Pengarang: ")
 	scanner.Scan()
 	newBook.Author = scanner.Text()
+	if newBook.Author == "" {
+		fmt.Println("┌────────────────────────────────────────────────┐")
+		fmt.Println("|      Pengarang buku tidak boleh kosong.        |")
+		fmt.Println("└────────────────────────────────────────────────┘")
+		return
+	}
+
 	fmt.Print("Tahun Terbit: ")
-	fmt.Scanln(&newBook.Year)
+	_, err := fmt.Scanln(&newBook.Year)
+	if err != nil {
+		fmt.Println("┌────────────────────────────────────────────────┐")
+		fmt.Println("|       Format tahun terbit tidak valid.         |")
+		fmt.Println("└────────────────────────────────────────────────┘")
+		return
+	}
+
 	fmt.Print("Stok: ")
-	fmt.Scanln(&newBook.Stock)
+	_, err = fmt.Scanln(&newBook.Stock)
+	if err != nil {
+		fmt.Println("┌────────────────────────────────────────────────┐")
+		fmt.Println("|            Format stok tidak valid.            |")
+		fmt.Println("└────────────────────────────────────────────────┘")
+		return
+	}
 
 	books = append(books, newBook)
 	saveData()
@@ -129,7 +156,9 @@ func deleteBook() {
 	fmt.Scanln(&indexToDelete)
 
 	if indexToDelete < 1 || indexToDelete > len(books) {
-		fmt.Println("Pilihan tidak valid. Operasi dibatalkan.")
+		fmt.Println("┌────────────────────────────────────────────────┐")
+		fmt.Println("|    Pilihan tidak valid. Operasi dibatalkan.    |")
+		fmt.Println("└────────────────────────────────────────────────┘")
 		return
 	}
 
@@ -140,7 +169,9 @@ func deleteBook() {
 	books = append(books[:indexToDelete], books[indexToDelete+1:]...)
 
 	saveData()
-	fmt.Println("Buku berhasil dihapus!")
+	fmt.Println("┌────────────────────────────────────────────────┐")
+	fmt.Println("|              Buku berhasil dihapus.            |")
+	fmt.Println("└────────────────────────────────────────────────┘")
 }
 
 // Fungsi untuk menambahkan peminjaman buku
@@ -175,16 +206,22 @@ func addBorrowing() {
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Scan()
 	borrowerName = scanner.Text()
+	if borrowerName == "" {
+		fmt.Println("┌────────────────────────────────────────────────┐")
+		fmt.Println("|       Peminjam buku tidak boleh kosong.        |")
+		fmt.Println("└────────────────────────────────────────────────┘")
+		return
+	}
 
 	var borrowDuration int
 	fmt.Print("Masukkan jumlah hari peminjaman (1-30): ")
 	fmt.Scanln(&borrowDuration)
 
 	if borrowDuration < 1 || borrowDuration > 30 {
-		fmt.Println("┌────────────────────────────────────────────────┐")
-		fmt.Println("|   Jumlah durasi peminjaman tidak valid.        |")
-		fmt.Println("|   Maksimal peminjaman 30 hari.                 |")
-		fmt.Println("└────────────────────────────────────────────────┘")
+		fmt.Println("┌───────────────────────────────────────────────────────────────┐")
+		fmt.Println("|   Jumlah durasi peminjaman tidak valid.                       |")
+		fmt.Println("|   Minimal peminjaman 1 hari dan maksimal peminjaman 30 hari.  |")
+		fmt.Println("└───────────────────────────────────────────────────────────────┘")
 		return
 	}
 
@@ -232,7 +269,7 @@ func searchBorrowing() {
 
 	// Looping data borrowings sampai mendapat data judul buku yang diinginkan lalu masukkan data ke slice matchingBorrowings
 	for _, borrowing := range borrowings {
-		if borrowing.Book.Title == bookTitle {
+		if strings.ToLower(borrowing.Book.Title) == strings.ToLower(bookTitle) {
 			matchingBorrowings = append(matchingBorrowings, borrowing)
 		}
 	}
@@ -264,9 +301,11 @@ func searchBorrowing() {
 
 		selectedBorrowing := matchingBorrowings[borrowingIndex]
 
-		fmt.Printf("Nama Peminjam: %s\n", selectedBorrowing.Borrower)
-		fmt.Printf("Tanggal Pinjam: %s\n", selectedBorrowing.BorrowDate.Format("2006-01-02"))
-		fmt.Printf("Tanggal Kembali: %s\n", selectedBorrowing.ReturnDate.Format("2006-01-02"))
+		fmt.Println("┌────────────────────────────────────────────────┐")
+		fmt.Printf("  Nama Peminjam: %s\n", selectedBorrowing.Borrower)
+		fmt.Printf("  Tanggal Pinjam: %s\n", selectedBorrowing.BorrowDate.Format("2006-01-02"))
+		fmt.Printf("  Tanggal Kembali: %s\n", selectedBorrowing.ReturnDate.Format("2006-01-02"))
+		fmt.Println("└────────────────────────────────────────────────┘")
 	} else {
 		fmt.Println("┌────────────────────────────────────────────────┐")
 		fmt.Println("|           Peminjaman tidak ditemukan.          |")
@@ -408,7 +447,7 @@ func main() {
 			displayMenu()
 
 			var choice int
-			fmt.Scan(&choice)
+			fmt.Scanln(&choice)
 
 			switch choice {
 			case 1:
@@ -470,12 +509,12 @@ func displayTutorialArgs() {
 	fmt.Println("| Pilih antara tambah_buku, cari_buku, hapus_buku, tambah_pinjam, cari_pinjam, atau hapus_pinjam                                                    |")
 	fmt.Println("|                                                                                                                                                   |")
 	fmt.Println("| Contoh penggunaan:                                                                                                                                |")
-	fmt.Println("| go run perpustakaan.go -command=\"tambah_buku\" -judul=\"Belajar Go\" -pengarang=\"Agus Kopling\" tahun=2020 stok=10                                    |")
-	fmt.Println("| go run perpustakaan.go -command=\"cari_buku\" -judul=\"Belajar Go\"                                                                                   |")
-	fmt.Println("| go run perpustakaan.go -command=\"hapus_buku\" -judul=\"Belajar Go\"                                                                                  |")
-	fmt.Println("| go run perpustakaan.go -command=\"tambah_pinjam\" -judul=\"Belajar Go\" -peminjam=\"Agus Kopling\" -tgl_pinjam=2023-12-31 -tgl_kembali=2024-01-30       |")
-	fmt.Println("| go run perpustakaan.go -command=\"cari_pinjam\" -judul=\"Belajar Go\"                                                                                 |")
-	fmt.Println("| go run perpustakaan.go -command=\"hapus_pinjam\" -judul=\"Belajar Go\" -peminjam=\"Agus Kopling\"                                                       |")
+	fmt.Println("| go run perpustakaan.go -command=tambah_buku -judul=\"Belajar Go\" -pengarang=\"Agus Kopling\" -tahun=2020 -stok=10                                    |")
+	fmt.Println("| go run perpustakaan.go -command=cari_buku -judul=\"Belajar Go\"                                                                                     |")
+	fmt.Println("| go run perpustakaan.go -command=hapus_buku -judul=\"Belajar Go\"                                                                                    |")
+	fmt.Println("| go run perpustakaan.go -command=tambah_pinjam -judul=\"Belajar Go\" -peminjam=\"Agus Kopling\" -tgl_pinjam=2023-12-31 -tgl_kembali=2024-01-30         |")
+	fmt.Println("| go run perpustakaan.go -command=cari_pinjam -judul=\"Belajar Go\"                                                                                   |")
+	fmt.Println("| go run perpustakaan.go -command=hapus_pinjam -judul=\"Belajar Go\" -peminjam=\"Agus Kopling\"                                                         |")
 	fmt.Println("└───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘")
 }
 
@@ -484,7 +523,7 @@ func addBookFromArgs(title string, author string, year int, stock int) {
 	if title == "" || author == "" || year == 0 || stock == 0 {
 		fmt.Println("┌───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐")
 		fmt.Println("|  Perintah tidak valid. contoh penggunaan:                                                                                 |")
-		fmt.Println("|  go run perpustakaan.go -command=\"tambah_buku\" -judul=\"Belajar Go\" -pengarang=\"Agus Kopling\" tahun=2020 stok=10           |")
+		fmt.Println("|  go run perpustakaan.go -command=tambah_buku -judul=\"Belajar Go\" -pengarang=\"Agus Kopling\" -tahun=2020 -stok=10           |")
 		fmt.Println("└───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘")
 	} else {
 		newBook := Book{
@@ -552,6 +591,12 @@ func deleteBookFromArgs(title string) {
 
 // fungsi untuk tambah peminjam 4
 func addBorrowingFromArgs(title string, borrower string, borrowDateStr string, returnDateStr string) {
+	if title == "" || borrower == "" {
+		fmt.Println("┌────────────────────────────────────────────────┐")
+		fmt.Println("|   Judul buku dan nama peminjam wajib diisi.    |")
+		fmt.Println("└────────────────────────────────────────────────┘")
+		return
+	}
 	// Mengubah format date/tanggal dari string menjadi time.time
 	borrowDate, err := time.Parse("2006-01-02", borrowDateStr)
 	if err != nil {
@@ -620,7 +665,7 @@ func searchBorrowingFromArgs(title string) {
 
 	// Looping data borrowings hingga mendapatkan judul buku yang ingin diketahui informasi peminjamannya
 	for _, borrowing := range borrowings {
-		if borrowing.Book.Title == title {
+		if strings.ToLower(borrowing.Book.Title) == strings.ToLower(title) {
 			matchingBorrowings = append(matchingBorrowings, borrowing)
 		}
 	}
@@ -677,7 +722,7 @@ func deleteBorrowingFromArgs(title string, borrower string) {
 
 	// Tambahkan stok untuk buku yang sesuai
 	for i, book := range books {
-		if book.Title == borrowing.Book.Title {
+		if strings.ToLower(book.Title) == strings.ToLower(borrowing.Book.Title) {
 			books[i].Stock++
 			break
 		}
@@ -692,7 +737,7 @@ func deleteBorrowingFromArgs(title string, borrower string) {
 
 func findBorrowing(title string, borrower string) (*Borrowing, int) {
 	for i, borrowing := range borrowings {
-		if borrowing.Book.Title == title && borrowing.Borrower == borrower {
+		if strings.ToLower(borrowing.Book.Title) == strings.ToLower(title) && strings.ToLower(borrowing.Borrower) == strings.ToLower(borrower) {
 			return &borrowing, i
 		}
 	}
